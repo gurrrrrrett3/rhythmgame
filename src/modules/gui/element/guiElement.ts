@@ -1,4 +1,5 @@
 import Vector2 from "../../util/classes/vector2";
+import GuiManager from "../guiManager";
 
 export default class GUIElement {
 
@@ -20,27 +21,27 @@ export default class GUIElement {
         this._children = [];
     }
 
+    public get anchorPosition(): Vector2 {
+        return this.position.add(this.size.mul(ANCHOR_MAP[this.anchor]));
+    }
+
     public get absolutePosition(): Vector2 {
-        if (this.parent) {
-            return this.parent.absolutePosition.add(this.position.mul(ANCHOR_MAP[this.anchor]));
-        } else {
-            const anchor = ANCHOR_MAP[this.anchor];
-            return this.position.mul(anchor)
-        }
+        // get correct corner based on anchor
+        let corner = ANCHOR_MAP[this.anchor];
+        // get position of corner based on size and anchor
+        let cornerPosition = this.position.sub(this.size.mul(corner));
+        
+        // get left and top padding based on anchor
+        let padding = corner.mul(this.size);
+        return cornerPosition.add(padding);
     }
 
     public get absoluteSize(): Vector2 {
-        return this.size.mul(new Vector2(window.innerWidth, window.innerHeight));
+        return this.size.mul(Vector2.double(GuiManager.unitSize))
     }
 
     public get screenPosition(): Vector2 {
-        if (this.parent) {
-
-            const realPosition = this.position.mul(ANCHOR_MAP[this.anchor]).mul(new Vector2(window.innerWidth, window.innerHeight));
-            return realPosition
-        } else {
-            return this.absolutePosition;
-        }
+        return this.absolutePosition.mul(Vector2.windowSize);
     }
 
     public get absoluteBounds(): { x: number, y: number, width: number, height: number } {
@@ -114,15 +115,19 @@ export default class GUIElement {
             ctx.lineWidth = 2;
     
             ctx.strokeRect(this.screenPosition.x, this.screenPosition.y, this.absoluteSize.x, this.absoluteSize.y);
-    
+
+            // draw anchor
+            ctx.arc(this.anchorPosition.x * Vector2.windowSize.x, this.anchorPosition.y * Vector2.windowSize.y, 5, 0, 2 * Math.PI);
+            
+            ctx.beginPath();
             ctx.measureText(this.id)
             ctx.fillText(this.id, this.screenPosition.x + 5, this.screenPosition.y + 24);
             ctx.font = "12px monospace";
             ctx.fillText(this.name, this.screenPosition.x + 5, this.screenPosition.y + 36);
-            ctx.fillText(`pos: ${this.position.x}u, ${this.position.y}u`, this.screenPosition.x + 5, this.screenPosition.y + 48);
-            ctx.fillText(`size: ${this.size.x}u, ${this.size.y}u`, this.screenPosition.x + 5, this.screenPosition.y + 60);
+            ctx.fillText(`pos: ${this.position.x.toFixed(2)}u, ${this.position.y.toFixed(2)}u`, this.screenPosition.x + 5, this.screenPosition.y + 48);
+            ctx.fillText(`size: ${this.size.x.toFixed(2)}u, ${this.size.y.toFixed(2)}u`, this.screenPosition.x + 5, this.screenPosition.y + 60);
+            ctx.fillText(`anchor: ${this.anchor} | ${this.anchorPosition.x} | ${this.anchorPosition.y}`, this.screenPosition.x + 5, this.screenPosition.y + 72);
 
-    
             ctx.restore();
         }
        

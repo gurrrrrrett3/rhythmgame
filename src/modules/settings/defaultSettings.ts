@@ -1,6 +1,7 @@
 export default function initalizeDefaultSettings() {
 
     window.game.settings.register('display.enableVsync', true);
+    window.game.settings.register('display.fullscreen', false);
     
     window.game.settings.register('audio.enable', true);
     window.game.settings.register('audio.musicVolume', 1);
@@ -8,12 +9,14 @@ export default function initalizeDefaultSettings() {
 
     window.game.settings.register('controls.button1', "KeyZ");
     window.game.settings.register('controls.button2', "KeyX");
+    window.game.settings.register('controls.enableMouseButtons', true);
     window.game.settings.register('controls.mouseSensitivity', 1);
 
     window.game.settings.register('debug.showFPS', false);
     window.game.settings.register('debug.showHitboxes', false);
     window.game.settings.register('debug.showDebugInfo', false);
     window.game.settings.register('debug.showDebugInfoOnPause', false);
+    window.game.settings.register('debug.eventLogging', false);
 
 
 }
@@ -24,6 +27,11 @@ export type Settings = {
     "display.enableVsync": {
         value: boolean;
         defaultValue: true;
+    }
+
+    "display.fullscreen": {
+        value: boolean;
+        defaultValue: false;
     }
 
     // audio
@@ -51,6 +59,11 @@ export type Settings = {
         defaultValue: "KeyX";
     }
 
+    "controls.enableMouseButtons": {
+        value: boolean;
+        defaultValue: true;
+    }
+
     "controls.mouseSensitivity": {
         value: number;
         defaultValue: 1;
@@ -70,6 +83,10 @@ export type Settings = {
         defaultValue: false;
     }
     "debug.showDebugInfoOnPause": {
+        value: boolean;
+        defaultValue: false;
+    }
+    "debug.eventLogging": {
         value: boolean;
         defaultValue: false;
     }

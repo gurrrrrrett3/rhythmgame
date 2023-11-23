@@ -3,8 +3,16 @@ import GuiManager from "./modules/gui/guiManager";
 import InputManager from "./modules/input/inputManager";
 import initalizeDefaultSettings, { Settings } from "./modules/settings/defaultSettings";
 import SettingsManager from "./modules/settings/settingsManager";
+import EventEmitter from "./modules/util/classes/eventEmitter";
 
-export default class Game {
+export default class Game extends EventEmitter<{
+    "game:load": (game: Game) => any;
+    "input:mouse:move": (x: number, y: number) => any
+    "input:button:1:down": (x: number, y: number) => any
+    "input:button:1:up": (x: number, y: number) => any
+    "input:button:2:down": (x: number, y: number) => any
+    "input:button:2:up": (x: number, y: number) => any
+}> {
 
     private _lastFrameTime: number = 0;
     private _drawHooks: Array<{
@@ -19,11 +27,12 @@ export default class Game {
     }> = [];
 
     public settings: SettingsManager<Settings>;
-    public gui: GuiManager ;
+    public gui: GuiManager;
     public input: InputManager;
-
+    public currentMode: string = "none";
 
     constructor(public canvas: HTMLCanvasElement, public ctx: CanvasRenderingContext2D) {
+        super()
         this.settings = new SettingsManager();
         this.gui = new GuiManager(this);
         this.input = new InputManager(this);
@@ -54,6 +63,10 @@ export default class Game {
         initalizeDefaultSettings();
         this.settings.load();
         DebugHud.init()
+
+        if (this.settings.get("debug.eventLogging")) {
+            this.enableEventLogging = true;
+        }
 
         this.tick(0);
     }
@@ -92,6 +105,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 canvas.id = "gameCanvas";
+canvas.setAttribute("aria-label", "game canvas");
 document.body.appendChild(canvas);
 
 window.game = new Game(canvas, ctx as CanvasRenderingContext2D);

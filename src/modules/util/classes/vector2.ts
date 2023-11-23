@@ -1,3 +1,5 @@
+import GuiManager from "../../gui/guiManager";
+
 export default class Vector2 {
     public x: number;
     public y: number;
@@ -52,6 +54,10 @@ export default class Vector2 {
 
     public static get windowSize(): Vector2 {
         return new Vector2(window.innerWidth, window.innerHeight);
+    }
+
+    public static get unitSize(): Vector2 {
+        return new Vector2(GuiManager.widthUnits, 100);
     }
 
     public static get up(): Vector2 {

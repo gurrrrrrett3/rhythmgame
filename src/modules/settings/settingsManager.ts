@@ -12,6 +12,7 @@ export default class SettingsManager<S extends {
     }
 
     public get<T extends keyof S>(key: T): S[T]["value"] {
+        if (!this._settings[key]) throw new Error(`Setting ${key.toString()} does not exist!`);
         return this._settings[key].value
     }
 

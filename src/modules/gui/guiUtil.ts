@@ -10,4 +10,13 @@ export default class GUIUtil {
         return percent.mul(Vector2.windowSize);
     }
 
+    public static getUnitSize() {
+        console.log(`Updated unit size to 1u = ${window.innerHeight / 100}px`)
+        return window.innerHeight / 100;
+    }
+
+    public static getWidthUnits() {
+        return window.innerWidth / GUIUtil.getUnitSize();
+    }
+
 }
