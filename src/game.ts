@@ -1,10 +1,12 @@
 import DebugHud from "./modules/debug/debugHud";
 import GuiManager from "./modules/gui/guiManager";
+import ScreenManager from "./modules/gui/screenManager";
+import InputDisplay from "./modules/input/inputDisplay";
 import InputManager from "./modules/input/inputManager";
 import initalizeDefaultSettings, { Settings } from "./modules/settings/defaultSettings";
 import SettingsManager from "./modules/settings/settingsManager";
 import EventEmitter from "./modules/util/classes/eventEmitter";
-
+import Logger from "./modules/util/classes/logger";
 export default class Game extends EventEmitter<{
     "game:load": (game: Game) => any;
     "input:mouse:move": (x: number, y: number) => any
@@ -29,13 +31,17 @@ export default class Game extends EventEmitter<{
     public settings: SettingsManager<Settings>;
     public gui: GuiManager;
     public input: InputManager;
+    public screen: ScreenManager;
     public currentMode: string = "none";
 
     constructor(public canvas: HTMLCanvasElement, public ctx: CanvasRenderingContext2D) {
         super()
-        this.settings = new SettingsManager();
+        this.settings = new SettingsManager()
         this.gui = new GuiManager(this);
         this.input = new InputManager(this);
+        this.screen = new ScreenManager(this);
+
+        this.emit("game:load", this);
     }
 
     private tick(runtime: number) {
@@ -102,6 +108,8 @@ export default class Game extends EventEmitter<{
 const canvas = document.createElement("canvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d");
 
+
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 canvas.id = "gameCanvas";
@@ -110,6 +118,12 @@ document.body.appendChild(canvas);
 
 window.game = new Game(canvas, ctx as CanvasRenderingContext2D);
 window.game.start();
+
+// default ctx settings
+game.ctx.imageSmoothingEnabled = false;
+game.ctx.font = "24px monospace";
+
+InputDisplay.init();
 
 window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;

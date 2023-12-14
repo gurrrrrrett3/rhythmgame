@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "vite": "^4.4.11"
+  },
+  "dependencies": {
+    "pixi.js": "^7.3.2"
   }
 }

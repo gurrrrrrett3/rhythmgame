@@ -14,7 +14,7 @@ export default class DebugHud {
             fpsElement.font = "24px monospace";
             fpsElement.color = "#ffffff";
 
-            window.game.registerUpdateHook("debugHud", 1000, (delta) => {
+            window.game.registerDrawHook("debugHud", 1000, (_, delta) => {
                 fpsElement.text = `FPS: ${(1000 / delta).toFixed(2)}`;
             });
         } 

@@ -23,6 +23,10 @@ export default class InputManager {
         })
 
         window.addEventListener("mousedown", (e) => {
+
+            game.canvas.focus();
+            game.canvas.requestPointerLock();
+
             if (game.settings.get("display.fullscreen")) {
                 game.canvas.requestFullscreen();
             }
@@ -55,7 +59,14 @@ export default class InputManager {
 
         window.addEventListener("mousemove", (e) => {
             this._mouseDelta = GUIUtil.pixelToPercent(new Vector2(e.movementX, e.movementY))
-            this._mousePosition = GUIUtil.pixelToPercent(new Vector2(e.x, e.y)).mul(Vector2.double(game.settings.get("controls.mouseSensitivity")).bound(Vector2.one, Vector2.zero));
+            
+            //  mouse position using direct position
+            // this._mousePosition = GUIUtil.pixelToPercent(new Vector2(e.x, e.y)).mul(Vector2.double(game.settings.get("controls.mouseSensitivity")).bound(Vector2.one, Vector2.zero));
+
+            // mouse position using delta
+            this._mousePosition = this._mousePosition.add(this._mouseDelta.mul(Vector2.double(game.settings.get("controls.mouseSensitivity")))).bound(Vector2.zero, Vector2.one);
+
+            console.log(this._mousePosition);
             game.emit("input:mouse:move", this._mousePosition.x, this._mousePosition.y);
         })
 
@@ -80,16 +91,6 @@ export default class InputManager {
                 this._button2 = false;
                 game.emit("input:button:2:up", this._mousePosition.x, this._mousePosition.y);
             }
-        })
-
-        game.registerDrawHook("renderMouse", 0, (ctx, delta) => {
-            const realPos = GUIUtil.percentToPixel(this._mousePosition);
-            ctx.save();
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.arc(realPos.x, realPos.y, 5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
         })
     }
 

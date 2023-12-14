@@ -1,23 +1,28 @@
+import { LogLevel } from "../util/classes/logger";
+
 export default function initalizeDefaultSettings() {
 
-    window.game.settings.register('display.enableVsync', true);
-    window.game.settings.register('display.fullscreen', false);
+    const settings = game.settings
+
+    settings.register('display.enableVsync', true);
+    settings.register('display.fullscreen', false);
     
-    window.game.settings.register('audio.enable', true);
-    window.game.settings.register('audio.musicVolume', 1);
-    window.game.settings.register('audio.soundVolume', 1);
+    settings.register('audio.enable', true);
+    settings.register('audio.musicVolume', 1);
+    settings.register('audio.soundVolume', 1);
 
-    window.game.settings.register('controls.button1', "KeyZ");
-    window.game.settings.register('controls.button2', "KeyX");
-    window.game.settings.register('controls.enableMouseButtons', true);
-    window.game.settings.register('controls.mouseSensitivity', 1);
+    settings.register('controls.button1', "KeyZ");
+    settings.register('controls.button2', "KeyX");
+    settings.register('controls.enableMouseButtons', true);
+    settings.register('controls.mouseSensitivity', 1);
 
-    window.game.settings.register('debug.showFPS', false);
-    window.game.settings.register('debug.showHitboxes', false);
-    window.game.settings.register('debug.showDebugInfo', false);
-    window.game.settings.register('debug.showDebugInfoOnPause', false);
-    window.game.settings.register('debug.eventLogging', false);
-
+    settings.register('debug.showFPS', false);
+    settings.register('debug.showHitboxes', false);
+    settings.register('debug.showDebugInfo', false);
+    settings.register('debug.showDebugInfoOnPause', false);
+    settings.register('debug.eventLogging', false);
+    settings.register('debug.logLevel', LogLevel.INFO);
+    settings.register('debug.disabledMethods', []);
 
 }
 
@@ -90,5 +95,12 @@ export type Settings = {
         value: boolean;
         defaultValue: false;
     }
-
+    "debug.logLevel": {
+        value: LogLevel;
+        defaultValue: LogLevel.INFO;
+    }
+    "debug.disabledMethods": {
+        value: string[];
+        defaultValue: [];
+    }
 } 

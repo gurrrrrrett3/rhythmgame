@@ -1,3 +1,5 @@
+import Logger from "./logger";
+
 /**
  * A reimplementation of the NodeJS EventEmitter class.
  */
@@ -23,12 +25,16 @@ export default class EventEmitter<T extends {
      * @param listener The listener function.
      */
     public on<K extends keyof T>(event: K, listener: T[K]): T[K] {
+        if (!this._listeners[event as string]) {
+            this._listeners[event as string] = [];
+        }
+
         this._listeners[event as string].push({
             listener,
             once: false
         });
 
-        if (this.enableEventLogging) console.log(`%c[EventEmitter] %cAdded listener for event %c${event.toString()}`, `color: #00ff00`, `color: #ffffff`, `color: #00ffff`);
+        if (this.enableEventLogging) Logger.debug("EventEmitter", `Added listener for event ${event.toString()}`);
 
         return listener;
     }
@@ -44,7 +50,7 @@ export default class EventEmitter<T extends {
             once: true
         });
 
-        if (this.enableEventLogging) console.log(`%c[EventEmitter] %cAdded listener for event %c${event.toString()} %c(once)`, `color: #00ff00`, `color: #ffffff`, `color: #00ffff`, `color: #ff00ff`);
+        if (this.enableEventLogging) Logger.debug("EventEmitter", `Added listener for event ${event.toString()}`);
 
         return listener;
 
@@ -85,7 +91,7 @@ export default class EventEmitter<T extends {
             });
         }
 
-        if (this.enableEventLogging) console.log(`%c[EventEmitter] %cEmitting event %c${event.toString()}`, `color: #00ff00`, `color: #ffffff`, `color: #00ffff`);
+        if (this.enableEventLogging) Logger.debug("EventEmitter", `Emitted event ${event.toString()}`);
     }
 
     /**

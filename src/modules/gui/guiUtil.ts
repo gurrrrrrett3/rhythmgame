@@ -1,3 +1,4 @@
+import Logger from "../util/classes/logger";
 import Vector2 from "../util/classes/vector2";
 
 export default class GUIUtil {
@@ -11,7 +12,7 @@ export default class GUIUtil {
     }
 
     public static getUnitSize() {
-        console.log(`Updated unit size to 1u = ${window.innerHeight / 100}px`)
+        Logger.debug('GUI', `Updated unit size to 1u = ${window.innerHeight / 100}px`)
         return window.innerHeight / 100;
     }
 

@@ -1,3 +1,5 @@
+import Logger from "../util/classes/logger";
+
 export default class SettingsManager<S extends {
     [key: string]: {
         value: any,
@@ -17,6 +19,7 @@ export default class SettingsManager<S extends {
     }
 
     public set<T extends keyof S>(key: T, value: S[T]["value"]): void {
+        if (!this._settings[key]) throw new Error(`Setting ${key.toString()} does not exist!`);
         this._settings[key].value = value;
         localStorage.setItem(`settings.${String(key)}`, JSON.stringify(value));
     }
@@ -30,12 +33,20 @@ export default class SettingsManager<S extends {
 
     public unregister<T extends keyof S>(key: T): void {
         delete this._settings[key];
+        localStorage.removeItem(`settings.${key.toString()}`);
     }
 
     public load(): void {
         Object.keys(this._settings).forEach(key => {
             let value = localStorage.getItem(`settings.${key}`);
             if (value) {
+
+                if (this._settings[key].defaultValue == value) {
+                    localStorage.removeItem(`settings.${key}`);
+                    Logger.log("Settings", `Removed setting ${key} from localStorage because it was the default value.`);
+                    return;
+                }
+
                 this._settings[key].value = JSON.parse(value);
             }
         });
